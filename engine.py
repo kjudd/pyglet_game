@@ -42,7 +42,8 @@ def setup_images():
             "Girl": "Character Pink Girl.png",
             "Princess": "Character Princess Girl.png",
             "Quokka": "Quokka1.png",
-            "SpeechBubble": "SpeechBubble.png"
+            "SpeechBubble": "SpeechBubble.png",
+            "EnemyBug": "Enemy Bug.png"
             }
 
     for k,v in filenames.items():

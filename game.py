@@ -13,7 +13,7 @@ PLAYER = None
 
 GAME_WIDTH = 7
 GAME_HEIGHT = 7
-
+GAME_OVER = False
 #### Put class definitions here ####
 class Rock(GameElement):
 	IMAGE = "Rock"
@@ -22,7 +22,7 @@ class Rock(GameElement):
 
 class Character(GameElement):
 	IMAGE = "Princess"
-
+	SOLID = True
 	def next_pos(self, direction):
 		if direction == "up" and self.y > 0:
 			return (self.x, self.y-1)
@@ -108,7 +108,28 @@ class Quokka(GameElement):
 			(3, 5),
 			(5, 3),
 			(5, 5),
-			(4, 2)	
+			(4, 2),
+			(3, 2),
+			(5, 2),
+			(0,0),
+			(0,1),
+			(0,2),
+			(0,3),
+			(0,4),
+			(0,5),
+			(0, 6),
+			(1, 0),
+			(1, 1),
+			(1, 2),
+			(1, 3),
+			(1, 4),
+			(1, 5),
+			(1, 6),
+			(2, 0),
+			(3, 0),
+			(4, 0),
+			(5, 0),
+			(6, 0)	
 			]
 			hearts = []
 			for pos in heart_positions:
@@ -144,7 +165,21 @@ class Chest(GameElement):
 			GAME_BOARD.draw_msg("Collect all items")
 
 		
-
+class EnemyBug(GameElement):
+	IMAGE = "EnemyBug"
+	SOLID = True
+	def next_pos1(self, direction):
+		if direction == "up" and self.y > 0:
+			return (self.x, self.y-2)
+		elif direction == "down" and self.y < 6:
+			return (self.x, self.y+2)
+		elif direction == "left" and self.x > 0:
+			return (self.x-2, self.y)
+		elif direction == "right" and self.x < 6:
+			return (self.x+2, self.y)
+		else:
+			return (self.x, self.y)
+			
 
 
 
@@ -211,8 +246,19 @@ def initialize():
     heart = Heart()
     GAME_BOARD.register(heart)
 
+    global BUG
+    BUG = EnemyBug()
+    GAME_BOARD.register(BUG)
+    GAME_BOARD.set_el(6, 0, BUG)
+
+
+
 #keyboard interaction
 def keyboard_handler():
+	global GAME_OVER
+	if GAME_OVER:
+		return
+
 	direction = None
 
 	if KEYBOARD[key.UP]:
@@ -228,7 +274,6 @@ def keyboard_handler():
 		direction = "right"
 		GAME_BOARD.del_el(5,2)
 	
-	#GAME_BOARD.del_el(5,2)
 	
 	if direction:
 		next_location = PLAYER.next_pos(direction)
@@ -245,4 +290,29 @@ def keyboard_handler():
 			GAME_BOARD.del_el(PLAYER.x, PLAYER.y)
 			GAME_BOARD.set_el(next_x, next_y, PLAYER)
 
+	if direction:
+		next_location = BUG.next_pos1(direction)
+		next_x = next_location[0]
+		next_y = next_location[1]
 		
+		existing_el = GAME_BOARD.get_el(next_x, next_y)
+ 		if existing_el == PLAYER:
+ 			GAME_BOARD.draw_msg("Game over! You suck!")
+ 			#generate positions for bugs	
+			bug_positions = [(x, y) for x in xrange(GAME_WIDTH) for y in xrange(GAME_HEIGHT)]
+			bugs = []
+			for pos in bug_positions:
+				bug1 = EnemyBug()
+				GAME_BOARD.register(bug1)
+				GAME_BOARD.set_el(pos[0], pos[1], bug1)
+				bugs.append(bug1)
+			for bug in bugs:
+				print bug
+
+			GAME_OVER = True
+
+		if existing_el is None or not existing_el.SOLID:
+			GAME_BOARD.del_el(BUG.x, BUG.y)
+			GAME_BOARD.set_el(next_x, next_y, BUG)
+
+
