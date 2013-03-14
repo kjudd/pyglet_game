@@ -129,7 +129,11 @@ class Quokka(GameElement):
 			(3, 0),
 			(4, 0),
 			(5, 0),
-			(6, 0)	
+			(6, 0),
+			(4, 3),
+			(3, 4),
+			(4, 5),
+			(5, 2)	
 			]
 			hearts = []
 			for pos in heart_positions:
@@ -180,13 +184,17 @@ class EnemyBug(GameElement):
 		else:
 			return (self.x, self.y)
 			
-
+class TallTree(GameElement):
+	IMAGE = "TallTree"
+	SOLID = True
 
 
 ####   End class definitions    ####
 
 def initialize():
     """Put game initialization code here"""
+
+    
 
     #Initialize and register rock1
     rock_positions = [
@@ -201,8 +209,6 @@ def initialize():
     	GAME_BOARD.set_el(pos[0], pos[1], rock)
     	rocks.append(rock)
 
-    #rocks [-1].SOLID = False
-
     for rock in rocks:
     	print rock
 
@@ -215,7 +221,7 @@ def initialize():
     print PLAYER
 
     #message from our sponsors
-    GAME_BOARD.draw_msg("This game is wicked awesome!")
+    GAME_BOARD.draw_msg("Find the Quokka in the magical forest!")
 
     #initialize gem
     gem = Gem()
@@ -224,7 +230,7 @@ def initialize():
 
     orange_gem = Orange_Gem()
     GAME_BOARD.register(orange_gem)
-    GAME_BOARD.set_el(3, 3, orange_gem)
+    GAME_BOARD.set_el(1, 6, orange_gem)
 
     quokka = Quokka()
     GAME_BOARD.register(quokka)
@@ -251,7 +257,25 @@ def initialize():
     GAME_BOARD.register(BUG)
     GAME_BOARD.set_el(6, 0, BUG)
 
+    tree = TallTree()
+    tree_positions = [
+    		(3, 3),
+    		(3, 4),
+    		(3, 5),
+    		(5, 5),
+    		(4, 5),
+    		(3, 5),
+    		(4, 3)	
+    		]
+    trees = []
+    for pos in tree_positions:
+    	tree = TallTree()
+    	GAME_BOARD.register(tree)
+    	GAME_BOARD.set_el(pos[0], pos[1], tree)
+    	rocks.append(tree)
 
+    for tree in trees:
+    	print tree
 
 #keyboard interaction
 def keyboard_handler():
